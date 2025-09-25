@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  devops-organizer:
+    build: .
+    container_name: devops-organizer-app
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0
+    volumes:
+      # Mount home directory for project scanning (read-only)
+      - ${HOME}:/host_home:ro
+      # Mount Docker socket for Docker management
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Mount SSH directory for SSH key management (read-only)
+      - ${HOME}/.ssh:/host_ssh:ro
+      # Mount kubeconfig for K3s access (read-only)
+      - ${HOME}/.kube:/host_kube:ro
+    networks:
+      - devops-net
+    depends_on:
+      - nginx
+    labels:
+      - "com.devops.organizer.service=app"
+
+  nginx:
+    image: nginx:alpine
+    container_name: devops-organizer-nginx
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+      - "4433:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - devops-net
+    labels:
+      - "com.devops.organizer.service=proxy"
+
+  llm:
+    provider:
+      type: model
+      options:
+        model: ${LLM_MODEL_NAME:-ai/llama3.2:1B-Q8_0}
+    restart: "no"
+    profiles:
+      - llm
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+
+networks:
+  devops-net:
+    driver: bridge
+    labels:
+      - "com.devops.organizer.network=main"
+
+volumes:
+  app-data:
+    driver: local
+    labels:
+      - "com.devops.organizer.volume=data"

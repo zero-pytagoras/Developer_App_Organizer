@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Developer Organizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-tools"></i> DevOps Developer Organizer</h1>
+            <p class="subtitle">Manage your local projects, Docker containers, K3s clusters, and SSH keys</p>
+        </header>
+
+        <div class="system-info" id="systemInfo">
+            <div class="system-card">
+                <i class="fas fa-desktop"></i>
+                <div class="system-details">
+                    <span class="system-label">System</span>
+                    <span class="system-value" id="platform">Loading...</span>
+                </div>
+            </div>
+            <div class="system-card">
+                <i class="fas fa-microchip"></i>
+                <div class="system-details">
+                    <span class="system-label">CPU</span>
+                    <span class="system-value" id="cpu">Loading...</span>
+                </div>
+            </div>
+            <div class="system-card">
+                <i class="fas fa-memory"></i>
+                <div class="system-details">
+                    <span class="system-label">Memory</span>
+                    <span class="system-value" id="memory">Loading...</span>
+                </div>
+            </div>
+            <div class="system-card">
+                <i class="fas fa-hdd"></i>
+                <div class="system-details">
+                    <span class="system-label">Disk</span>
+                    <span class="system-value" id="disk">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="agents">
+                <i class="fas fa-server"></i>
+                Agents
+            </button>
+            <button class="tab-btn" data-tab="projects">
+                <i class="fas fa-folder-open"></i>
+                Projects
+            </button>
+            <button class="tab-btn" data-tab="docker">
+                <i class="fab fa-docker"></i>
+                Docker
+            </button>
+            <button class="tab-btn" data-tab="k3s">
+                <i class="fas fa-cloud"></i>
+                K3s
+            </button>
+            <button class="tab-btn" data-tab="ssh">
+                <i class="fas fa-key"></i>
+                SSH Keys
+            </button>
+            <button class="tab-btn" data-tab="ai">
+                <i class="fas fa-robot"></i>
+                AI Assistant
+            </button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Agents Tab -->
+            <div class="tab-content active" id="agents">
+                <div class="tab-header">
+                    <h2><i class="fas fa-server"></i> Connected Agents</h2>
+                    <div class="controls">
+                        <button id="refreshAgents" class="btn btn-secondary">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="loading" id="agentsLoading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading agents...
+                </div>
+                <div class="agents-grid" id="agentsGrid"></div>
+                
+                <div class="agent-instructions" id="agentInstructions" style="display: none;">
+                    <div class="instructions-card">
+                        <h3><i class="fas fa-download"></i> Install Agent on New Machine</h3>
+                        <p>To add a new machine to monitoring, install the agent using one of these methods:</p>
+                        
+                        <div class="instruction-method">
+                            <h4>Method 1: Automatic Installation</h4>
+                            <div class="code-block">
+                                <code>curl -fsSL http://[MANAGEMENT_SERVER]/agent/install.sh | sudo bash -s -- --server http://[MANAGEMENT_SERVER]</code>
+                                <button class="copy-btn" onclick="copyInstallCommand()">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="instruction-method">
+                            <h4>Method 2: Manual Installation</h4>
+                            <ol>
+                                <li>Download agent files from the management server</li>
+                                <li>Run: <code>sudo ./install-agent.sh --server http://[MANAGEMENT_SERVER]</code></li>
+                                <li>Agent will automatically start and register</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="instruction-method">
+                            <h4>Method 3: Docker Container</h4>
+                            <div class="code-block">
+                                <code>docker run -d --name devops-agent \<br>
+  -v /var/run/docker.sock:/var/run/docker.sock:ro \<br>
+  -v $HOME:/host_home:ro \<br>
+  -e MANAGEMENT_SERVER=http://[MANAGEMENT_SERVER] \<br>
+  devops-organizer-agent:latest</code>
+                                <button class="copy-btn" onclick="copyDockerCommand()">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div class="tab-content" id="projects">
+                <div class="tab-header">
+                    <h2><i class="fas fa-folder-open"></i> Local Projects Finder</h2>
+                    <div class="controls">
+                        <div class="custom-path">
+                            <input type="text" id="customPath" placeholder="Enter custom search path (optional)">
+                            <button id="searchBtn" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        <button id="refreshProjects" class="btn btn-secondary">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="loading" id="projectsLoading">
+                    <i class="fas fa-spinner fa-spin"></i> Searching for projects...
+                </div>
+                <div class="projects-grid" id="projectsGrid"></div>
+            </div>
+
+            <!-- Docker Tab -->
+            <div class="tab-content" id="docker">
+                <div class="tab-header">
+                    <h2><i class="fab fa-docker"></i> Docker Management</h2>
+                    <button id="refreshDocker" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                
+                <div class="docker-section">
+                    <h3><i class="fas fa-play-circle"></i> Running Containers</h3>
+                    <div class="loading" id="dockerRunningLoading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading containers...
+                    </div>
+                    <div class="containers-grid" id="runningContainers"></div>
+                </div>
+
+                <div class="docker-section">
+                    <h3><i class="fas fa-stop-circle"></i> Stopped Containers</h3>
+                    <div class="containers-grid" id="stoppedContainers"></div>
+                </div>
+
+                <div class="docker-section">
+                    <h3><i class="fas fa-layer-group"></i> Docker Images</h3>
+                    <div class="images-grid" id="dockerImages"></div>
+                </div>
+            </div>
+
+            <!-- K3s Tab -->
+            <div class="tab-content" id="k3s">
+                <div class="tab-header">
+                    <h2><i class="fas fa-cloud"></i> K3s Cluster Management</h2>
+                    <button id="refreshK3s" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="k3s-section">
+                    <h3><i class="fas fa-server"></i> Available Nodes</h3>
+                    <div class="loading" id="k3sNodesLoading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading nodes...
+                    </div>
+                    <div class="nodes-grid" id="k3sNodes"></div>
+                </div>
+
+                <div class="k3s-section">
+                    <h3><i class="fas fa-cubes"></i> Active Pods</h3>
+                    <div class="loading" id="k3sPodsLoading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading pods...
+                    </div>
+                    <div class="pods-grid" id="k3sPods"></div>
+                </div>
+            </div>
+
+            <!-- SSH Keys Tab -->
+            <div class="tab-content" id="ssh">
+                <div class="tab-header">
+                    <h2><i class="fas fa-key"></i> SSH Keys Management</h2>
+                    <button id="refreshSSH" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                <div class="loading" id="sshLoading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading SSH keys...
+                </div>
+                <div class="ssh-keys-grid" id="sshKeys"></div>
+            </div>
+
+            <!-- AI Assistant Tab -->
+            <div class="tab-content" id="ai">
+                <div class="tab-header">
+                    <h2><i class="fas fa-robot"></i> AI Assistant</h2>
+                    <div class="controls">
+                        <button id="clearChat" class="btn btn-secondary">
+                            <i class="fas fa-trash"></i> Clear Chat
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ai-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="welcome-message">
+                            <div class="message-bubble ai-message">
+                                <div class="message-content">
+                                    <i class="fas fa-robot"></i>
+                                    <div class="message-text">
+                                        <strong>Welcome to the DevOps AI Assistant!</strong><br>
+                                        I can help you analyze your infrastructure data. Try asking me:
+                                        <ul>
+                                            <li>"How many agents are currently connected?"</li>
+                                            <li>"What Python projects do I have?"</li>
+                                            <li>"Which containers are running?"</li>
+                                            <li>"Show me projects that could help build web applications"</li>
+                                        </ul>
+                                        <small><em>Note: AI Assistant requires Docker Model to be enabled. If unavailable, all other monitoring features work normally.</em></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <input type="text" id="chatInput" placeholder="Ask me about your infrastructure..." maxlength="500">
+                            <button id="sendMessage" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div class="chat-status" id="chatStatus">
+                            <span class="status-indicator">
+                                <i class="fas fa-circle" id="llmStatus"></i>
+                                <span id="llmStatusText">Checking LLM connection...</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
