@@ -15,7 +15,7 @@ A modern web-based tool for monitoring and managing multiple development machine
 - **Real-Time Data**: Live updates from connected agents
 - **Cross-Platform**: Works on Linux, macOS, and Windows
 
-### 📁 **Project Discovery**
+### 📁 **Project  Discovery**
 - **Git Repository Detection**: Automatically finds all Git projects
 - **Multi-Language Support**: Python, JavaScript, Java, C#, Rust, Go, PHP, Ruby, C++, Docker, Terraform
 - **Smart Analysis**: Project sizes, file counts, dependencies, virtual environments
