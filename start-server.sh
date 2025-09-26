@@ -1,4 +1,8 @@
 #!/bin/bash
+# Author: Sean Rokah
+# Date: 2025-09-16
+# Version: 1.0.0
+# Description: Start the management server with Docker Compose
 
 # DevOps Organizer - Quick Start Script
 # Start the management server with Docker Compose
@@ -41,10 +45,8 @@ check_docker() {
 check_docker_model() {
     print_info "Checking for Docker Model availability..."
     
-    if command -v docker &> /dev/null && docker --help 2>/dev/null | grep -q "model"; then
-        print_success "Docker Model command is available! AI Assistant features will be enabled."
-        return 0
-    else
+    # Check if docker model command is available
+    if ! command -v docker model &> /dev/null; then
         print_warning "Docker Model command not found."
         echo
         echo -e "${YELLOW}🤖 AI Assistant features will be disabled.${NC}"
@@ -55,6 +57,29 @@ check_docker_model() {
         echo "  3. Restart the server with: ${BLUE}./start-server.sh${NC}"
         echo
         echo "For more information, visit: https://docs.docker.com/reference/cli/docker/model/"
+        echo
+        print_info "Continuing without AI features..."
+        return 1
+    fi
+    
+    # Check Docker Model Runner status
+    local model_status
+    model_status=$(docker model status 2>/dev/null || echo "")
+    
+    if [[ "$model_status" == *"Docker Model Runner is running"* ]]; then
+        print_success "Docker Model Runner is running! AI Assistant features will be enabled."
+        return 0
+    else
+        print_warning "Docker Model Runner is not running."
+        echo
+        echo -e "${YELLOW}🤖 AI Assistant features will be disabled.${NC}"
+        echo
+        echo "Current status: $model_status"
+        echo
+        echo "To enable AI Assistant features (optional):"
+        echo "  1. Start Docker Model Runner in Docker Desktop"
+        echo "  2. Or run: docker model start (if available)"
+        echo "  3. Restart the server with: ${BLUE}./start-server.sh${NC}"
         echo
         print_info "Continuing without AI features..."
         return 1
