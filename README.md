@@ -43,17 +43,33 @@ A modern web-based tool for monitoring and managing multiple development machine
 - **Python 3.11+** (on machines where you'll run agents)
 - **Git** (recommended)
 
-### 1. Download Project
+### Option 1: Using Pre-built Docker Image (Recommended)
+The project includes GitHub Actions that automatically build and publish Docker images on every push.
+
 ```bash
-git clone <repository-url>
-cd Final_Project
+# Start with pre-built image
+docker run -d \
+  --name devops-organizer \
+  -p 8085:8085 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  ghcr.io/yourusername/devops-organizer:latest
+
+# Or use docker-compose with pre-built image
+curl -o docker-compose.yml https://raw.githubusercontent.com/yourusername/your-repo/main/docker-compose.yml
+docker-compose up -d
 ```
 
-### 2. Start Management Server
+### Option 2: Build from Source
 ```bash
+# 1. Download Project
+git clone <repository-url>
+cd Final_Project
+
+# 2. Start Management Server
 ./start-server.sh
 ```
-**Access Dashboard**: Open http://localhost in your browser
+
+**Access Dashboard**: Open http://localhost:8085 in your browser
 
 ### 3. Install Agent on Target Machine(s)
 ```bash
@@ -145,6 +161,23 @@ python3 ~/.devops-agent/simple-agent.py --server http://192.168.1.100:8085 --int
 - Cluster health information
 - Multi-cluster support
 
+## 🤖 CI/CD & Automation
+
+### GitHub Actions Workflows
+This project includes comprehensive GitHub Actions for automated testing and deployment:
+
+- **🐍 Python CI** (`ci-python.yml`): Automated linting with flake8 & black, security scanning with bandit, and testing
+- **🐳 Docker Security** (`docker-security-check.yml`): Container security scanning and vulnerability detection
+- **📦 GHCR Publishing** (`ghcr.yml`): Automatic Docker image building and publishing to GitHub Container Registry
+- **🔍 Secret Scanning** (`trufflehog-check.yml`): Automated detection of secrets and sensitive data
+
+### Automated Image Builds
+Every push to the main branch automatically:
+1. **Builds** the Docker image with latest code
+2. **Tests** the image for security vulnerabilities
+3. **Publishes** to GitHub Container Registry (GHCR)
+4. **Tags** with commit SHA and 'latest'
+
 ## 🔧 Development & Deployment
 
 ### Local Development
@@ -158,11 +191,32 @@ python3 simple-agent.py --server http://localhost:8085 --once
 ```
 
 ### Production Deployment
-```bash
-# Update server configuration in docker-compose.yml
-# Deploy on production server
-docker-compose up -d
 
+#### Option A: Using Pre-built Images (Recommended)
+```bash
+# Quick deployment with latest stable image
+docker run -d \
+  --name devops-organizer \
+  -p 8085:8085 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  --restart unless-stopped \
+  ghcr.io/yourusername/devops-organizer:latest
+
+# Or with docker-compose
+curl -o docker-compose.yml https://raw.githubusercontent.com/yourusername/your-repo/main/docker-compose.yml
+docker-compose up -d
+```
+
+#### Option B: Build from Source
+```bash
+# Clone and build locally
+git clone <repository-url>
+cd Final_Project
+./start-server.sh
+```
+
+#### Agent Deployment
+```bash
 # Install agents on target machines
 ./simple-install.sh
 python3 ~/.devops-agent/simple-agent.py --server http://[PROD_SERVER]:8085
