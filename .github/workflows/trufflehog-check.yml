@@ -15,4 +15,4 @@ jobs:
       - uses: trufflesecurity/trufflehog@main
         with:
           path: .
-          extra_args: --skip-verification
+          extra_args: --no-verify
