@@ -75,7 +75,7 @@ class SimpleAgent:
             client = docker.from_env()
             client.ping()
             return True
-        except:
+        except Exception:
             return False
     
     def _kubectl_available(self):
@@ -84,7 +84,7 @@ class SimpleAgent:
             result = subprocess.run(['kubectl', 'version', '--client'], 
                                   capture_output=True, timeout=5)
             return result.returncode == 0
-        except:
+        except Exception:
             return False
     
     def collect_system_info(self):

@@ -10,10 +10,8 @@ import subprocess
 import platform
 from pathlib import Path
 from flask import Flask, render_template, jsonify, request
-import psutil
 import docker
 from kubernetes import client, config
-import glob
 from datetime import datetime, timedelta
 import threading
 import sqlite3
