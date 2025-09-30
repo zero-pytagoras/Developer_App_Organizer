@@ -52,10 +52,10 @@ docker run -d \
   --name devops-organizer \
   -p 8085:8085 \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  ghcr.io/yourusername/devops-organizer:latest
+  ghcr.io/seanrokah/devops-organizer:latest
 
 # Or use docker-compose with pre-built image
-curl -o docker-compose.yml https://raw.githubusercontent.com/yourusername/your-repo/main/docker-compose.yml
+curl -o docker-compose.yml https://raw.githubusercontent.com/seanrokah/your-repo/main/docker-compose.yml
 docker-compose up -d
 ```
 
@@ -200,10 +200,10 @@ docker run -d \
   -p 8085:8085 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   --restart unless-stopped \
-  ghcr.io/yourusername/devops-organizer:latest
+  ghcr.io/seanrokah/devops-organizer:latest
 
 # Or with docker-compose
-curl -o docker-compose.yml https://raw.githubusercontent.com/yourusername/your-repo/main/docker-compose.yml
+curl -o docker-compose.yml https://raw.githubusercontent.com/seanrokah/your-repo/main/docker-compose.yml
 docker-compose up -d
 ```
 
