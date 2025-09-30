@@ -44,7 +44,7 @@ devops-agent.exe --server http://your-server:8085 --once
 
 Every push to main automatically builds executables for Linux, Windows, and macOS. Check the [Actions tab](../../actions) for build status.
 
-To create a release, go to Actions → "Make Release" and enter a version like `v1.0.0`.
+To create a versioned release, go to Actions → "Build Agent Executables" → "Run workflow" and enter a version like `v1.0.0`.
 
 ## 📋 Command Line Options
 
