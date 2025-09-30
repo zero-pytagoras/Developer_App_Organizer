@@ -434,27 +434,123 @@ class SimpleAgent:
             log(f"Agent error: {e}", "ERROR")
 
 
+def get_user_input():
+    """Interactive mode to get user input"""
+    print("=" * 60)
+    print("🚀 DevOps Organizer Agent - Interactive Setup")
+    print("=" * 60)
+    print()
+    
+    # Get server URL
+    while True:
+        server = input("📡 Management server URL (e.g., http://192.168.1.100:8085): ").strip()
+        if server:
+            if not server.startswith(('http://', 'https://')):
+                server = 'http://' + server
+            break
+        print("❌ Server URL is required!")
+    
+    # Get agent name
+    agent_name = input(f"🏷️  Agent name (press Enter for '{socket.gethostname()}'): ").strip()
+    if not agent_name:
+        agent_name = None
+    
+    # Get execution mode
+    print("\n🔧 Execution mode:")
+    print("1. Test connection (run once and exit)")
+    print("2. Continuous monitoring")
+    
+    while True:
+        mode = input("Choose mode (1 or 2): ").strip()
+        if mode in ['1', '2']:
+            break
+        print("❌ Please enter 1 or 2")
+    
+    run_once = (mode == '1')
+    interval = 30
+    
+    # Get interval if continuous mode
+    if not run_once:
+        while True:
+            interval_input = input(f"⏱️  Report interval in seconds (press Enter for {interval}): ").strip()
+            if not interval_input:
+                break
+            try:
+                interval = int(interval_input)
+                if interval < 10:
+                    print("❌ Interval must be at least 10 seconds")
+                    continue
+                break
+            except ValueError:
+                print("❌ Please enter a valid number")
+    
+    print("\n" + "=" * 60)
+    print("📋 Configuration Summary:")
+    print(f"   Server: {server}")
+    print(f"   Agent: {agent_name or socket.gethostname()}")
+    print(f"   Mode: {'Test run (once)' if run_once else f'Continuous (every {interval}s)'}")
+    print("=" * 60)
+    
+    # Confirm
+    confirm = input("\n✅ Start agent with these settings? (Y/n): ").strip().lower()
+    if confirm and confirm not in ['y', 'yes']:
+        print("❌ Cancelled by user")
+        sys.exit(0)
+    
+    return server, agent_name, run_once, interval
+
+
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(description='DevOps Organizer Simple Agent')
-    parser.add_argument('--server', required=True, help='Management server URL')
+    parser.add_argument('--server', help='Management server URL')
     parser.add_argument('--name', help='Agent name (default: hostname)')
     parser.add_argument('--interval', type=int, default=30, help='Report interval in seconds')
     parser.add_argument('--once', action='store_true', help='Run once and exit')
+    parser.add_argument('--interactive', action='store_true', help='Force interactive mode')
     
     args = parser.parse_args()
     
-    # Create and run agent
-    agent = SimpleAgent(
-        management_server_url=args.server,
-        agent_name=args.name
-    )
-    
-    if args.once:
-        success = agent.run_once()
-        sys.exit(0 if success else 1)
+    # Use interactive mode if no server provided or explicitly requested
+    if not args.server or args.interactive:
+        try:
+            server, agent_name, run_once, interval = get_user_input()
+        except KeyboardInterrupt:
+            print("\n\n❌ Cancelled by user")
+            sys.exit(0)
     else:
-        agent.run_continuous(args.interval)
+        server = args.server
+        agent_name = args.name
+        run_once = args.once
+        interval = args.interval
+    
+    print(f"\n🚀 Starting DevOps Organizer Agent...")
+    
+    # Create and run agent
+    try:
+        agent = SimpleAgent(
+            management_server_url=server,
+            agent_name=agent_name
+        )
+        
+        if run_once:
+            print("🔍 Running test connection...")
+            success = agent.run_once()
+            if success:
+                print("✅ Test completed successfully!")
+            else:
+                print("❌ Test failed - check server connection")
+            sys.exit(0 if success else 1)
+        else:
+            print(f"🔄 Starting continuous monitoring (interval: {interval}s)")
+            print("💡 Press Ctrl+C to stop")
+            agent.run_continuous(interval)
+    except KeyboardInterrupt:
+        print("\n\n🛑 Agent stopped by user")
+        sys.exit(0)
+    except Exception as e:
+        print(f"\n❌ Agent error: {e}")
+        sys.exit(1)
 
 
 if __name__ == '__main__':
