@@ -2,24 +2,49 @@
 
 A lightweight monitoring agent that collects system information and sends it to the central management server.
 
-## 🚀 Quick Installation
+## 🚀 Quick Start
 
-### 1. Install Agent
+### Option 1: Download Pre-built Executables
+
+Download the latest release from the [Releases page](../../releases) for your platform:
+
+- **Linux**: `devops-agent-linux-x64.tar.gz`
+- **Windows**: `devops-agent-windows-x64.zip` 
+- **macOS**: `devops-agent-macos-x64.tar.gz`
+
+Extract and run:
 ```bash
-./simple-install.sh
+# Linux/macOS
+./devops-agent --server http://your-server:8085 --once
+
+# Windows
+devops-agent.exe --server http://your-server:8085 --once
 ```
 
-### 2. Run Agent
-```bash
-# Test run (execute once and exit)
-python3 ~/.devops-agent/simple-agent.py --server http://[SERVER_IP]:8085 --once
+### Option 2: Install from Source
 
-# Continuous monitoring
-python3 ~/.devops-agent/simple-agent.py --server http://[SERVER_IP]:8085
+1. **Install Agent**:
+   ```bash
+   ./simple-install.sh
+   ```
 
-# With custom name and interval
-python3 ~/.devops-agent/simple-agent.py --server http://192.168.1.100:8085 --name "my-laptop" --interval 60
-```
+2. **Run Agent**:
+   ```bash
+   # Test run (execute once and exit)
+   python3 ~/.devops-agent/simple-agent.py --server http://[SERVER_IP]:8085 --once
+
+   # Continuous monitoring
+   python3 ~/.devops-agent/simple-agent.py --server http://[SERVER_IP]:8085
+
+   # With custom name and interval
+   python3 ~/.devops-agent/simple-agent.py --server http://192.168.1.100:8085 --name "my-laptop" --interval 60
+   ```
+
+## 🔨 Building Executables
+
+Every push to main automatically builds executables for Linux, Windows, and macOS. Check the [Actions tab](../../actions) for build status.
+
+To create a release, go to Actions → "Make Release" and enter a version like `v1.0.0`.
 
 ## 📋 Command Line Options
 

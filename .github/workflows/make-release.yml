@@ -1,0 +1,61 @@
+name: Make Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (like v1.0.0)'
+        required: true
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    # Download all the built stuff
+    - name: Download Linux
+      uses: actions/download-artifact@v4
+      with:
+        name: linux-agent
+        path: ./
+    
+    - name: Download Windows  
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-agent
+        path: ./
+    
+    - name: Download macOS
+      uses: actions/download-artifact@v4
+      with:
+        name: macos-agent
+        path: ./
+    
+    # Make a release
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.event.inputs.version }}
+        name: Agent ${{ github.event.inputs.version }}
+        body: |
+          ## DevOps Agent ${{ github.event.inputs.version }}
+          
+          Download for your platform:
+          - **Linux**: devops-agent-linux.tar.gz
+          - **Windows**: devops-agent-windows.zip  
+          - **macOS**: devops-agent-macos.tar.gz
+          
+          ## How to use:
+          ```bash
+          # Extract and run
+          ./devops-agent --server http://your-server:8085 --once
+          ```
+        files: |
+          devops-agent-linux.tar.gz
+          devops-agent-windows.zip
+          devops-agent-macos.tar.gz
+        draft: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
