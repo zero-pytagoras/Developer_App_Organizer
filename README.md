@@ -326,6 +326,5 @@ This project is developed for educational purposes as part of DevOps coursework.
 
 ---
 
-**Built for DevOps Engineers by DevOps Engineers** 🚀
 
 *Simplify your development workflow with centralized multi-machine monitoring.*
