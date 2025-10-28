@@ -43,7 +43,21 @@ A modern web-based tool for monitoring and managing multiple development machine
 - **Python 3.11+** (on machines where you'll run agents).
 - **Git** (recommended).
 
-### Option 1: Using Pre-built Docker Image (Recommended)
+### Default Option: (Recommended):
+1) Pull the Repo.
+2) Run ```./start-server.sh``` from the project's root directory in order to build and start the Management Server.
+3) Make sure to create a virtual environment - the script will download the needed repositories mentioned in the requirements.txt file.
+> For Example, Run:
+```
+python3 -m venv path/to/venv
+source path/to/venv/bin/activate
+python3 -m pip install {package_name}
+```
+4) Navigate to the agent folder (agent/) and Run ```./simple-install.sh```
+5) Follow the instructions in the terminal responses.
+
+
+### Option 1: Using Pre-built Docker Image:
 The project includes GitHub Actions that automatically build and publish Docker images on every push.
 
 ```bash
