@@ -53,7 +53,7 @@ python3 -m venv path/to/venv
 source path/to/venv/bin/activate
 python3 -m pip install {package_name}
 ```
-4) Navigate to the agent folder [agent/](agent/) and Run ```./simple-install.sh```
+4) Navigate to the agent folder [agent/]((agent/)) and Run ```./simple-install.sh```
 5) Follow the instructions in the terminal responses.
 
 
