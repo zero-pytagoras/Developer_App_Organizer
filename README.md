@@ -10,38 +10,38 @@ A modern web-based tool for monitoring and managing multiple development machine
 ## 🌟 Features
 
 ### 🖥️ **Multi-Machine Monitoring**
-- **Agent-Based Architecture**: Deploy lightweight agents on any machine
-- **Centralized Dashboard**: Monitor all machines from one web interface
-- **Real-Time Data**: Live updates from connected agents
-- **Cross-Platform**: Works on Linux, macOS, and Windows
+- **Agent-Based Architecture**: Deploy lightweight agents on any machine.
+- **Centralized Dashboard**: Monitor all machines from one web interface.
+- **Real-Time Data**: Live updates from connected agents.
+- **Cross-Platform**: Works on Linux, macOS, and Windows.
 
 ### 📁 **Project  Discovery**
-- **Git Repository Detection**: Automatically finds all Git projects
-- **Multi-Language Support**: Python, JavaScript, Java, C#, Rust, Go, PHP, Ruby, C++, Docker, Terraform
-- **Smart Analysis**: Project sizes, file counts, dependencies, virtual environments
-- **Library Detection**: Automatically identifies project dependencies
+- **Git Repository Detection**: Automatically finds all Git projects.
+- **Multi-Language Support**: Python, JavaScript, Java, C#, Rust, Go, PHP, Ruby, C++, Docker, Terraform.
+- **Smart Analysis**: Project sizes, file counts, dependencies, virtual environments.
+- **Library Detection**: Automatically identifies project dependencies.
 
 ### 🐳 **Docker Management**
-- **Container Monitoring**: Running and stopped containers across all machines
-- **Image Inventory**: Complete Docker image catalog with sizes and tags
-- **Multi-Host Support**: Monitor Docker across multiple development machines
+- **Container Monitoring**: Running and stopped containers across all machines.
+- **Image Inventory**: Complete Docker image catalog with sizes and tags.
+- **Multi-Host Support**: Monitor Docker across multiple development machines.
 
 ### ☸️ **K3s/Kubernetes Integration**
-- **Cluster Monitoring**: Node status and health across clusters
-- **Pod Management**: Active pods with resource information
-- **Multi-Cluster**: Support for multiple K3s/Kubernetes environments
+- **Cluster Monitoring**: Node status and health across clusters.
+- **Pod Management**: Active pods with resource information.
+- **Multi-Cluster**: Support for multiple K3s/Kubernetes environments.
 
 ### 🔐 **SSH Key Management**
-- **Key Discovery**: Automatic SSH key inventory
-- **Type Detection**: RSA, DSA, ECDSA, Ed25519 identification
-- **Security Overview**: Complete authentication key management
+- **Key Discovery**: Automatic SSH key inventory.
+- **Type Detection**: RSA, DSA, ECDSA, Ed25519 identification.
+- **Security Overview**: Complete authentication key management.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - **Docker & Docker Compose**
-- **Python 3.11+** (on machines where you'll run agents)
-- **Git** (recommended)
+- **Python 3.11+** (on machines where you'll run agents).
+- **Git** (recommended).
 
 ### Option 1: Using Pre-built Docker Image (Recommended)
 The project includes GitHub Actions that automatically build and publish Docker images on every push.
