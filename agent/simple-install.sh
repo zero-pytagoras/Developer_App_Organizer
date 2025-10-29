@@ -17,7 +17,9 @@ print_header() {
     echo -e "${BLUE}  DevOps Organizer Simple Agent Setup${NC}"
     echo -e "${BLUE}================================================${NC}"
 }
-
+####
+# too many function that do the same thing
+####
 print_success() {
     echo -e "${GREEN}✓ $1${NC}"
 }
@@ -34,7 +36,7 @@ print_error() {
     echo -e "${RED}✗ $1${NC}"
 }
 
-show_help() {
+show_help() { #we've talked about this too many times in the class
     cat << EOF
 Usage: $0 [OPTIONS]
 
@@ -75,13 +77,15 @@ install_dependencies() {
     print_info "Installing Python dependencies..."
     
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    
+    # we mentioned not to declare variables during the script but at the beginning
     if [ ! -f "$SCRIPT_DIR/requirements.txt" ]; then
         print_error "requirements.txt not found in $SCRIPT_DIR"
         exit 1
     fi
     
-    # Install dependencies
+    # Install dependencies => this never will work, because this variable is created after the venv exists, 
+    # so you have to force it to run or the whole `install_dependencies` needs to run as a if condition
+    # and needs to `return`  value of success of failure
     if [[ -n "$VIRTUAL_ENV" ]]; then
         print_info "Virtual environment detected: $VIRTUAL_ENV"
         pip3 install -r "$SCRIPT_DIR/requirements.txt"
@@ -95,6 +99,9 @@ install_dependencies() {
 
 setup_agent() {
     print_info "Setting up agent files..."
+    ####
+    # once again => do not declare variables during the run but only at the beging 
+    ####
     
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     
@@ -121,6 +128,9 @@ setup_agent() {
 
 show_usage_instructions() {
     print_success "Setup completed!"
+    ####
+    # this is definately not how i taught this.
+    ####
     echo
     echo -e "${BLUE}Agent Location:${NC}"
     echo "  $INSTALL_DIR/simple-agent.py"
@@ -175,7 +185,7 @@ main() {
     done
     
     print_header
-    
+    #you will never know if any of these function will run or fail...
     check_requirements
     install_dependencies
     setup_agent
