@@ -21,7 +21,7 @@ import sys
 def log(message, level="INFO"):
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] [{level}] {message}")
-
+# where are the logs saved ?
 class SimpleAgent:
     """Simplified agent that collects and reports system data"""
     
@@ -68,8 +68,13 @@ class SimpleAgent:
             log(f"Failed to register agent: {e}", "ERROR")
             return False
     
-    def _docker_available(self):
+    def _docker_available(self): 
+        # what is point of docker check ? if you are seeking for connection, for the agent, 
+        #then whether it is docker, baremetal or hand of God does not matter
         """Check if Docker is available"""
+        # you either never run lynt or are escaping lynt that suppose to create error out of this: not to import libraries during the script
+        # either do it at the beginning or separate the function from the script, make library of it and import at the beginning to make it
+        # implamnetable
         try:
             import docker
             client = docker.from_env()
@@ -79,6 +84,8 @@ class SimpleAgent:
             return False
     
     def _kubectl_available(self):
+        # there is a library for k8s just like for docker and it works in the same way
+        # same things that goes for  docker goes for this.
         """Check if kubectl is available"""
         try:
             result = subprocess.run(['kubectl', 'version', '--client'], 
@@ -129,6 +136,7 @@ class SimpleAgent:
     
     def _find_git_projects(self):
         """Find Git repositories"""
+        # pygit library is easier to use for this
         projects = []
         base_path = Path.home()
         
@@ -326,6 +334,7 @@ class SimpleAgent:
     
     def collect_ssh_info(self):
         """Collect SSH key information"""
+        # i am not sure this is wise or secured.
         try:
             ssh_dir = Path.home() / '.ssh'
             keys = []
@@ -555,3 +564,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+# single file applications are fine when they run as script - you have create something big, and from management point of view, in 6 month this will be unmaintainable
+# we went through building the libraries in python exactly for cases like this -> it does not need to be this long 
+# library name rich is used for colors and emoji -> they do not need to be embedded in script
+# main function needs to be on top -> because it is the one thst is the entry point to your whole tool
